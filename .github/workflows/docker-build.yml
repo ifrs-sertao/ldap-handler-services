@@ -34,5 +34,5 @@ jobs:
         with:
           push: true
           tags: |
-            docker.pkg.github.com/${{ github.repository }}/${{ github.repository.name }}:${{steps.tag.outputs.tag}}
-            docker.pkg.github.com/${{ github.repository }}/${{ github.repository.name }}:${{steps.tag.outputs.tag}}
+            docker.pkg.github.com/${{ github.repository }}/${{ github.repository }}:${{steps.tag.outputs.tag}}
+            docker.pkg.github.com/${{ github.repository }}/${{ github.repository }}:${{steps.tag.outputs.tag}}
