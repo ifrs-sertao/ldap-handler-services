@@ -28,11 +28,8 @@ jobs:
 
       - name: Use tag
         run: echo ${{steps.tag.outputs.tag}}
-
-      - run: echo ::set-env name=REPOSITORY_NAME::$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")
-        shell: bash
       
-      - run: echo "$REPOSITORY_NAME"
+      - run: echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $1}')" >> $GITHUB_REPO_NAME
         shell: bash
 
       - name: Build container image
@@ -40,5 +37,5 @@ jobs:
         with:
           push: true
           tags: |
-            docker.pkg.github.com/${{ github.repository }}/{{$REPOSITORY_NAME}}:${{steps.tag.outputs.tag}}
-            docker.pkg.github.com/${{ github.repository }}/{{$REPOSITORY_NAME}}:${{steps.tag.outputs.tag}}
+            docker.pkg.github.com/${{ github.repository }}/$GITHUB_REPO_NAME:${{steps.tag.outputs.tag}}
+            docker.pkg.github.com/${{ github.repository }}/$GITHUB_REPO_NAME:${{steps.tag.outputs.tag}}
