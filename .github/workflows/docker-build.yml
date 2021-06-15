@@ -38,38 +38,38 @@ jobs:
             docker.pkg.github.com/${{ github.repository }}/${{ env.REPOSITORY_NAME }}:${{steps.tag.outputs.tag}}
             docker.pkg.github.com/${{ github.repository }}/${{ env.REPOSITORY_NAME }}:${{steps.tag.outputs.tag}}
 
-      # - name: portainer stack deploy
-      #   uses: LGinC/portainer-stack-deploy@0.3.1
-      #   with: 
-      #       serverurl: https://portainer3.sertao.ifrs.edu.br
-      #       username: ${{ secrets.PORTAINER_USERNAME }}
-      #       password: ${{ secrets.PORTAINER_PASSWORD }}
-      #       endpointId: 1
-      #       stackname: ${{ env.REPOSITORY_NAME }}
-      #       registry: docker.pkg.github.com
-      #       imagename: docker.pkg.github.com/${{ github.repository }}/${{ env.REPOSITORY_NAME }}:${{steps.tag.outputs.tag}}
-      #       docker_compose: |
-      #         version: "3.3"
-      #         services:
-      #           ${{ env.REPOSITORY_NAME }}:
-      #             image: 'docker.pkg.github.com/${{ github.repository }}/${{ env.REPOSITORY_NAME }}:${{steps.tag.outputs.tag}}'
-      #             container_name: ${{ env.REPOSITORY_NAME }}
-      #             restart: always
-      #             ports:
-      #                 - '1111:1111'
-      #             volumes:
-      #                 - /var/run/docker.sock:/var/run/docker.sock
-      #                 - ./data:/data
-      #             labels:
-      #               - "traefik.enable=true"
-      #               - "traefik.http.routers.${{ env.REPOSITORY_NAME }}.rule=Host(`${{ env.REPOSITORY_NAME }}.sertao.ifrs.edu.br`)"
-      #               - "traefik.http.services.${{ env.REPOSITORY_NAME }}.loadbalancer.server.port=1111"
-      #               - "traefik.http.routers.${{ env.REPOSITORY_NAME }}.entrypoints=websecure"
-      #               - "traefik.http.routers.${{ env.REPOSITORY_NAME }}.tls"
-      #             networks:
-      #               - traefik-net
-      #         volumes:
-      #             data:
-      #         networks:
-      #           traefik-net:
-      #              external: true
+      - name: portainer stack deploy
+        uses: LGinC/portainer-stack-deploy@0.3.1
+        with: 
+            serverurl: https://portainer3.sertao.ifrs.edu.br
+            username: ${{ secrets.PORTAINER_USERNAME }}
+            password: ${{ secrets.PORTAINER_PASSWORD }}
+            endpointId: 1
+            stackname: ${{ env.REPOSITORY_NAME }}
+            registry: docker.pkg.github.com
+            imagename: docker.pkg.github.com/${{ github.repository }}/${{ env.REPOSITORY_NAME }}:${{steps.tag.outputs.tag}}
+            docker_compose: |
+              version: "3.3"
+              services:
+                ${{ env.REPOSITORY_NAME }}:
+                  image: 'docker.pkg.github.com/${{ github.repository }}/${{ env.REPOSITORY_NAME }}:${{steps.tag.outputs.tag}}'
+                  container_name: ${{ env.REPOSITORY_NAME }}
+                  restart: always
+                  ports:
+                      - '1111:1111'
+                  volumes:
+                      - /var/run/docker.sock:/var/run/docker.sock
+                      - ./data:/data
+                  labels:
+                    - "traefik.enable=true"
+                    - "traefik.http.routers.${{ env.REPOSITORY_NAME }}.rule=Host(`${{ env.REPOSITORY_NAME }}.sertao.ifrs.edu.br`)"
+                    - "traefik.http.services.${{ env.REPOSITORY_NAME }}.loadbalancer.server.port=1111"
+                    - "traefik.http.routers.${{ env.REPOSITORY_NAME }}.entrypoints=websecure"
+                    - "traefik.http.routers.${{ env.REPOSITORY_NAME }}.tls"
+                  networks:
+                    - traefik-net
+              volumes:
+                  data:
+              networks:
+                traefik-net:
+                   external: true
