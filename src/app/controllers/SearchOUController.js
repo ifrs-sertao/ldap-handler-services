@@ -33,8 +33,8 @@ module.exports = {
         };
 
          // returno para o usuario
-         return res.status(201).send({
-            success: `A OU ${foundOU.cn} existe na base LDAP`,
+         return res.status(200).send({
+            success: `A OU ${foundOU.dn} existe na base LDAP`,
             ou: foundOU
         });
 

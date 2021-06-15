@@ -27,7 +27,7 @@ module.exports = {
         };
 
          // returno para o usuario
-         return res.status(201).send({
+         return res.status(200).send({
             success: `O usuário ${foundUser.cn} foi encontrado`,
             user: foundUser
         });

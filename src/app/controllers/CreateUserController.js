@@ -57,8 +57,8 @@ module.exports = {
         // adicionar usuario
         const addNewUser = await addUser(newDN, newUser_data);
         if (!addNewUser) {
-            return res.status(401).send({ error: "Usuário não pode ser criado"});
-        };
+            return res.status(401).send("Usuário não pode ser criado");
+            };
 
         // pega o atributo msSFU30MaxUidNumber para inserir no campo uidNumber do usuário
         const { msSFU30MaxUidNumber } = await getMsSFU30MaxUidNumber();
@@ -103,7 +103,7 @@ module.exports = {
 
         // returno para o usuario
         return res.status(201).send({
-            success: `O aluno ${fullname} foi adicionado com sucesso`,
+            success: `O usuário ${fullname} foi adicionado com sucesso`,
             user: newUser_data
         });
 

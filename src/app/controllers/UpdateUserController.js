@@ -49,7 +49,7 @@ module.exports = {
 
         // returno para o usuario
         return res.status(201).send({
-            success: `O e-mail do aluno ${foundUpdatedUser.cn} foi alterado com sucesso`,
+            success: `O aluno ${foundUpdatedUser.cn} foi alterado com sucesso`,
             user: foundUpdatedUser,
         });
     },

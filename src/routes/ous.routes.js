@@ -3,7 +3,7 @@ const ousRoutes = express.Router();
 
 const searchOUController = require("../app/controllers/SearchOUController");
 
-ousRoutes.get("/", searchOUController.searchOU);
+ousRoutes.post("/search", searchOUController.searchOU);
 
 
 // add grupo
