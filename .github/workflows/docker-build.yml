@@ -37,6 +37,14 @@ jobs:
           tags: |
             docker.pkg.github.com/${{ github.repository }}/${{ env.REPOSITORY_NAME }}:${{steps.tag.outputs.tag}}
             docker.pkg.github.com/${{ github.repository }}/${{ env.REPOSITORY_NAME }}:${{steps.tag.outputs.tag}}
+            
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
 
       - name: portainer stack deploy
         uses: LGinC/portainer-stack-deploy@0.3.1
