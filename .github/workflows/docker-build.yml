@@ -4,7 +4,7 @@ on:
     types: [published]
 jobs:
   push_to_registry:
-    name: Push Docker image to GitHub Packages
+    name: Push Docker image to GitHub Packages and deploy Portainer
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -37,11 +37,7 @@ jobs:
           tags: |
             docker.pkg.github.com/${{ github.repository }}/${{ env.REPOSITORY_NAME }}:${{steps.tag.outputs.tag}}
             docker.pkg.github.com/${{ github.repository }}/${{ env.REPOSITORY_NAME }}:${{steps.tag.outputs.tag}}
-  
-  deploy_to_portainer:
-    runs-on: ubuntu-latest
-    steps:
-      # Teste com portainer-deploy   
+
       - name: portainer stack deploy
         uses: LGinC/portainer-stack-deploy@0.3.1
         with: 
