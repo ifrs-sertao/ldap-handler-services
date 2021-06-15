@@ -1,29 +1,286 @@
-<html>
-    <head>
-        <!-- Load the latest Swagger UI code and style from npm using unpkg.com -->
-        <script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
-        <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@3/swagger-ui.css"/>
-        <title>My New API</title>
-    </head>
-    <body>
-        <div id="swagger-ui"></div> <!-- Div to hold the UI component -->
-        <script>
-            window.onload = function () {
-                // Begin Swagger UI call region
-                const ui = SwaggerUIBundle({
-                    url: "/src/swagger.json", //Location of Open API spec in the repo
-                    dom_id: '#swagger-ui',
-                    deepLinking: true,
-                    presets: [
-                        SwaggerUIBundle.presets.apis,
-                        SwaggerUIBundle.SwaggerUIStandalonePreset
-                    ],
-                    plugins: [
-                        SwaggerUIBundle.plugins.DownloadUrl
-                    ],
-                })
-                window.ui = ui
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "LDAP HANDLER SERVICES API REST",
+        "description": "REST API microservice for Active Directory/LDAP implementations.",
+        "version": "1.0.0",
+        "contact": {
+            "email": "everton.pavan@sertao.ifrs.edu.br"
+        }
+    },
+    "tags": [
+        {
+            "name": "Sessions",
+            "description": "Authetication"
+        },
+        {
+            "name": "Users",
+            "description": "API for users in base LDAP"
+        },
+        {
+            "name": "Groups",
+            "description": "API for groups in base LDAP"
+        },
+        {
+            "name": "OUs",
+            "description": "API for OUs in base LDAP"
+        }
+    ],
+    "servers": [
+        {
+            "url": "http://localhost:1111/api/v1"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
-        </script>
-    </body>
-</html>
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "security": [],
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Authenticate in the application",
+                "description": "Authenticate in the application",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "user": "9999999",
+                                    "password": "secret"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Autenticação realizada com sucesso"
+                    }
+                }
+            }
+        },
+        "/users/{cpf}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "List a specific user",
+                "description": "List a specific user",
+                "responses": {
+                    "200": {
+                        "description": "O usuário ${foundUser.cn} foi encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update a specific user",
+                "description": "Update a specific user",
+                "responses": {
+                    "200": {
+                        "description": "O aluno ${foundUpdatedUser.cn} foi alterado com sucesso"
+                    }
+                }
+            }
+        },
+        "/users/create": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create a user",
+                "description": "Create a new user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "fullname": {
+                                        "type": "string"
+                                    },
+                                    "matricula": {
+                                        "type": "string"
+                                    },
+                                    "cpf": {
+                                        "type": "string"
+                                    },
+                                    "mail": {
+                                        "type": "string"
+                                    },
+                                    "ou": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "fullname": "Ronaldo Fenômeno Nazário",
+                                    "matricula": "9999999",
+                                    "cpf": "12345678900",
+                                    "mail": "ronaldo.nazario@fenomeno.com",
+                                    "ou": "DC=devdom,DC=com"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "O usuário ${fullname} foi adicionado com sucesso"
+                    },
+                    "401": {
+                        "description": "Usuário não pode ser criado"
+                    }
+                }
+            }
+        },
+        "/users/{cpf}/authenticate": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Authenticate with a specific user",
+                "description": "Authenticate with a specific user",
+                "responses": {
+                    "200": {
+                        "description": "Autenticação realizada com sucesso"
+                    }
+                }
+            }
+        },
+        "/users/{cpf}/password": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Change password of specific user",
+                "description": "Change password of specific user",
+                "responses": {
+                    "200": {
+                        "description": "Senha do usuário ${user} foi alterada com sucesso"
+                    }
+                }
+            }
+        },
+        "/groups/{group}": {
+            "get": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "Search a specific group",
+                "description": "Search a specific group",
+                "parameters": [
+                    {
+                        "name": "group",
+                        "in": "path",
+                        "description": "Name of group to search",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "O grupo ${foundGroup.dn} existe na base LDAP"
+                    }
+                }
+            }
+        },
+        "/groups/{group}/user/{user}": {
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "Add user in a group",
+                "description": "Add user in a group",
+                "parameters": [
+                    {
+                        "name": "group",
+                        "in": "path",
+                        "description": "Name of group to add",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "Name of user to search",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "O usuário ${foundUser.cn} foi adicionado ao grupo ${foundGroup.cn} com sucesso"
+                    },
+                    "401": {
+                        "description": "Usuário já está no grupo ALUNOS"
+                    }
+                }
+            }
+        },
+        "/ous/search": {
+            "post": {
+                "tags": [
+                    "OUs"
+                ],
+                "summary": "Search a specific organizatinal unit",
+                "description": "Search a specific organizatinal unit",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "ou": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "ou": "OU=users,DC=devdom,DC=com"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "A OU ${foundOU.cn} existe na base LDAP"
+                    },
+                    "401": {
+                        "description": "A OU ${ou} não foi encontrada na base LDAP"
+                    }
+                }
+            }
+        }
+    }
+}
