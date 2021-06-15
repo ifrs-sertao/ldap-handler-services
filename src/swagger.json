@@ -10,6 +10,10 @@
     },
     "tags": [
         {
+            "name": "Sessions",
+            "description": "Authetication"
+        },
+        {
             "name": "Users",
             "description": "API for users in base LDAP"
         },
@@ -42,6 +46,42 @@
         }
     ],
     "paths": {
+        "/auth/login": {
+            "post": {
+                "security": [],
+                "tags": [
+                    "Sessions"
+                ],
+                "summary": "Authenticate in the application",
+                "description": "Authenticate in the application",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "user": "9999999",
+                                    "password": "secret"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Autenticação realizada com sucesso"
+                    }
+                }
+            }
+        },
         "/users/{cpf}": {
             "get": {
                 "tags": [
