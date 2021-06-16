@@ -41,7 +41,7 @@ jobs:
       # - name: portainer stack deploy
       #   uses: LGinC/portainer-stack-deploy@0.3.1
       #   with: 
-      #       serverurl: https://portainer3.sertao.ifrs.edu.br
+      #       serverurl: ${{ secrets.PORTAINER_URL }}
       #       username: ${{ secrets.PORTAINER_USERNAME }}
       #       password: ${{ secrets.PORTAINER_PASSWORD }}
       #       endpointId: 1
