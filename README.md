@@ -1,6 +1,7 @@
 <h1 align="center">LDAP HANDLER SERVICES</h1>
 
 ## REST API microservice for Active Directory/LDAP implementations.
+Uma proposta de REST API agnóstica para implementações LDAP como Samba 4, Active Directoty e OpenLDAP.
 
 <br/>
 
