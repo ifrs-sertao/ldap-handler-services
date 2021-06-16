@@ -366,7 +366,6 @@ async function getGroup(grupo) {
                 return data
             })
             .catch(err => {
-                console.log('err', err)
                 return false
             })
 
@@ -507,4 +506,40 @@ const addPromise_ouCreate = (newDN, newOU) => {
     })
 }
 
-module.exports = { authenticate, addUser, updateUser, addUserToGroup, getMsSFU30MaxUidNumber, updateMsSFU30MaxUidNumber, getUser, getGroup, getOU, addOU }
+/*use this to add group*/
+async function addGroup(newDN, newGroup) {
+
+    console.log("newDN", newDN )
+    console.log("newGroup", newGroup)
+
+
+    const result = await addPromise_createGroup(newDN, newGroup)
+    .then(data => {
+        return true
+    })
+    .catch(err => {
+        return false
+    })
+
+    return result
+}
+
+const addPromise_createGroup = (newDN, newGroup) => {
+    return new Promise((resolve, reject) => {
+
+        console.log("newDN", newDN )
+    console.log("newGroup", newGroup)
+
+        ldapClient.add(newDN, newGroup, function (err) {
+            if (err) {
+                console.log("ERRO: Criação do grupo: " + err);
+                reject(err)
+            } else {
+                console.log("SUCESSO: Grupo criado");
+                resolve()
+            }
+        })
+    })
+}
+
+module.exports = { authenticate, addUser, updateUser, addUserToGroup, getMsSFU30MaxUidNumber, updateMsSFU30MaxUidNumber, getUser, getGroup, getOU, addOU, addGroup }
