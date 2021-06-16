@@ -1,4 +1,4 @@
-const { authenticate, addUser, updateUser, addUserToGroup, getMsSFU30MaxUidNumber, updateMsSFU30MaxUidNumber, getOU }= require('../../lib/functions-ldap');
+const { authenticate, getUser, addUser, updateUser, addUserToGroup, getMsSFU30MaxUidNumber, updateMsSFU30MaxUidNumber, getOU }= require('../../lib/functions-ldap');
 require('dotenv').config()
 
 // Credentials LDAP Administrator 
@@ -19,6 +19,10 @@ module.exports = {
         sobrenome = sobrenome.toUpperCase();
         fullname = fullname.toUpperCase();
 
+        // trata OU
+        const arrayOuData = ou.split(",")
+        const ouArrayNames = arrayOuData[0].split("=")
+        const ouName = ouArrayNames[1]
 
         const dn = `CN=${fullname}`;
 
@@ -49,7 +53,7 @@ module.exports = {
         }
 
         // verificar se OU existe
-        const foundOU = await getOU(ou)
+        const foundOU = await getOU(ouName)
         if (!foundOU) {
             return res.status(401).send({ error: `A OU ${ou} não foi encontrada na base LDAP` });
         };
@@ -58,7 +62,7 @@ module.exports = {
         const addNewUser = await addUser(newDN, newUser_data);
         if (!addNewUser) {
             return res.status(401).send("Usuário não pode ser criado");
-            };
+        };
 
         // pega o atributo msSFU30MaxUidNumber para inserir no campo uidNumber do usuário
         const { msSFU30MaxUidNumber } = await getMsSFU30MaxUidNumber();
@@ -101,10 +105,16 @@ module.exports = {
             return res.status(401).send({ error: "Usuário não foi adicinado no grupo"});
         };
 
+         // busca usuario no LDAP
+         const foundNewUser = await getUser(cpf)
+         if (!foundNewUser) {
+             return res.status(401).send({ error: `O usuário ${cpf} não foi encontrado na base LDAP` });
+         };
+
         // returno para o usuario
         return res.status(201).send({
             success: `O usuário ${fullname} foi adicionado com sucesso`,
-            user: newUser_data
+            user: foundNewUser
         });
 
     }

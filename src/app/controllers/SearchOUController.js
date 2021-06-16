@@ -1,24 +1,20 @@
-// var ldapjs = require('ldapjs');
 const { authenticate, getOU }= require('../../lib/functions-ldap');
 require('dotenv').config()
 
 // Credentials LDAP Administrator 
 const userRoot = process.env.USERROOT;
 const password = process.env.PASSWORD;
-const adSuffix = process.env.ADSUFFIX;
-
-const OU_ANO = process.env.OU_ANO;
-
-// OU que será criado os usuários - [] colocar como dinâmica
-const OU_ALUNOS = `OU=${OU_ANO}, OU=NODEJS-TESTE, OU=USUARIOS,OU=CAMPUS,DC=devdom,DC=sertao,DC=ifrs,DC=edu,DC=br`;
-
-
 
 module.exports = {
    
     async searchOU(req, res) {
 
         const { ou } = req.body;
+
+        const arrayOuData = ou.split(",")
+        const ouName = arrayOuData[0].split("=")
+        const name = ouName[1]
+
 
         // autenticar
         const auth = await authenticate(userRoot, password);
@@ -27,7 +23,7 @@ module.exports = {
         }
 
         // verificar se OU existe
-        const foundOU = await getOU(ou)
+        const foundOU = await getOU(name)
         if (!foundOU) {
             return res.status(401).send({ error: `A OU ${ou} não foi encontrada na base LDAP` });
         };

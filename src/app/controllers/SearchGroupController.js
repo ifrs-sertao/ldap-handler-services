@@ -1,17 +1,9 @@
-// var ldapjs = require('ldapjs');
 const { authenticate, getUser, getGroup, addUserToGroup }= require('../../lib/functions-ldap');
 require('dotenv').config()
 
 // Credentials LDAP Administrator 
 const userRoot = process.env.USERROOT;
 const password = process.env.PASSWORD;
-const adSuffix = process.env.ADSUFFIX;
-
-const OU_ANO = process.env.OU_ANO;
-
-// OU que será criado os usuários - [] colocar como dinâmica
-const OU_ALUNOS = `OU=${OU_ANO}, OU=NODEJS-TESTE, OU=USUARIOS,OU=CAMPUS,DC=devdom,DC=sertao,DC=ifrs,DC=edu,DC=br`;
-
 
 
 module.exports = {
@@ -37,7 +29,6 @@ module.exports = {
             success: `O grupo ${foundGroup.cn} existe na base LDAP`,
             group: foundGroup
         });
-
 
     }
 }

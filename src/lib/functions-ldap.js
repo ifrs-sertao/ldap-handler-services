@@ -404,9 +404,14 @@ const searchPromise_getGroup = (adSuffix, opts) => {
 /*use this to search a OU*/
 async function getOU(ou) {
 
+    console.log("ou", ou)
+    console.log()
+
     // aqui deve ser filtrado na mesma OU de criação
     var opts = {
-        filter: `(&(objectClass=organizationalUnit))`,
+        filter: `(&(objectClass=organizationalUnit)(ou=${ou}))`,
+        // filter: `(&(objectCategory=group)(|(dn=${ou})))`,
+        // filter: `(&(objectClass=organizationalUnit))`,
         scope: 'sub',
         // attributes: [
         //     'cn',
@@ -422,30 +427,30 @@ async function getOU(ou) {
                 return data
             })
             .catch(err => {
-                console.log('err', err)
+                console.log('aqui erro', err)
                 return false
             })
 
     return result
 }
 
-const searchPromise_getOU = (adSuffix, opts, ou) => {
+const searchPromise_getOU = (adSuffix, opts) => {
     return new Promise((resolve, reject) => {
 
         let ous = [];
 
-        ldapClient.search(ou, opts, function (err, res) {
+        ldapClient.search(adSuffix, opts, function (err, res) {
             if (err) {
                 console.log("ERRO: Erro na busca pela OU " + err)
                 reject(err);
             } else {
                 res.on('searchEntry', async function (entry) {
-                    console.log('SUCESSO: OU encontrada');
+                    console.log('SUCESSO: OU encontrada' + JSON.stringify(entry.object));
                     ous.push(entry.object)
                 });
                 res.on('end', async function () {
                     if (ous.length < 1) {
-                        // console.log("ERRO: Nenhum usuário encontrado")
+                        console.log("ERRO: Nenhum OU encontrado")
                         reject()
                     } else {
                         // console.log('SUCESSO: Usuário(s) encontrado(s) : ' + JSON.stringify(groups));
@@ -472,5 +477,34 @@ function encodeNewPassword(password) {
 }
 
 
+/*use this to add OU*/
+async function addOU(newDN, newOU) {
 
-module.exports = { authenticate, addUser, updateUser, addUserToGroup, getMsSFU30MaxUidNumber, updateMsSFU30MaxUidNumber, getUser, getGroup, getOU }
+    const result = await addPromise_ouCreate(newDN, newOU)
+    .then(data => {
+        return true
+    })
+    .catch(err => {
+        console.log('erro', err)
+        return false
+    })
+
+    return result
+}
+
+const addPromise_ouCreate = (newDN, newOU) => {
+    return new Promise((resolve, reject) => {
+
+        ldapClient.add(newDN, newOU, function (err) {
+            if (err) {
+                console.log("ERRO: Criação da OU: " + err);
+                reject(err)
+            } else {
+                console.log("SUCESSO: OU criada");
+                resolve()
+            }
+        })
+    })
+}
+
+module.exports = { authenticate, addUser, updateUser, addUserToGroup, getMsSFU30MaxUidNumber, updateMsSFU30MaxUidNumber, getUser, getGroup, getOU, addOU }
