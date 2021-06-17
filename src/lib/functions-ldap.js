@@ -125,7 +125,7 @@ async function addUserToGroup(newDN, groupname) {  // groupname =  "ALUNOS"
 /*use this to get msSFU30MaxUidNumber*/
 async function getMsSFU30MaxUidNumber() {
 
-    ypserver = "CN=devdom,CN=ypservers,CN=ypServ30,CN=RpcServices,CN=System,DC=devdom,DC=sertao,DC=ifrs,DC=edu,DC=br" // trocar para produção
+    const ypserver = process.env.YPSERVER
 
     var opts = {
         filter: '(objectClass=msSFU30DomainInfo)',

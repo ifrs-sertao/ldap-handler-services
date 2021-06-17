@@ -1,4 +1,7 @@
 const express = require('express');
+require('express-async-errors');
+// const appError = require('http-errors')
+const AppError = require('./shared/errors/AppError')
 const cors = require('cors');
 const app = express();
 
@@ -22,5 +25,24 @@ app.get('/', (req, res) => {
   });
 
 app.use('/api/v1', routes);
+
+// error handler middleware - put this in other files
+app.use((error, request, response, next) => {
+
+  // console.log("AppError: ", error)
+
+  if (error instanceof AppError) {
+    return response.status(error.statusCode).json({
+      message: error.message,
+    });
+  }
+
+  return response.status(500).json({
+    status: "error",
+    message: `Internal server error - ${error.message}`,
+  });
+
+  
+});
 
 module.exports = app;
