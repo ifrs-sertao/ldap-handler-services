@@ -104,6 +104,13 @@ async function updateUser(newDN, newUser_unixAttributes) {
 
 /*use this to add user to group*/
 async function addUserToGroup(newDN, groupname) {  // groupname =  "ALUNOS"
+
+       console.log('----------------------------------')
+
+        console.log(ldapjs)
+
+        console.log('----------------------------------')
+
     var change = new ldapjs.Change({
         operation: 'add',
         modification: {
@@ -304,13 +311,41 @@ async function getUser(usuario) {
         ],  //colocar todos os atributos aqui - tentar pegar os grupos tbm  
     };
 
-    const result = await searchPromise_getUser(adSuffix, opts)
-            .then(data => {
-                return data
-            })
-            .catch(err => {
-                return false
-            })
+    // const result = await searchPromise_getUser(adSuffix, opts)
+    //         .then(data => {
+    //             return data
+    //         })
+    //         .catch(err => {
+    //             return false
+    //         })
+
+        
+    const result = new Promise((resolve, reject) => {
+
+        let users = [];
+
+        ldapClient.search(adSuffix, opts, function (err, res) {
+            if (err) {
+                // console.log("ERRO: Erro na busca pelo usuário " + err)
+                reject(err);
+            } else {
+                res.on('searchEntry', async function (entry) {
+                    // console.log('SUCESSO: Usuário encontrado : ' + JSON.stringify(entry.object));
+                    users.push(entry.object)
+                });
+                res.on('end', async function () {
+                    if (users.length < 1) {
+                        // console.log("ERRO: Nenhum usuário encontrado")
+                        reject()
+                    } else {
+                        // console.log('SUCESSO: Usuário(s) encontrado(s) : ' + JSON.stringify(users));
+                        resolve(...users);
+                    }
+                })
+            }
+        });
+    }).then(data => {return data}).catch(err => {return false})
+
 
     return result
 }
@@ -350,7 +385,7 @@ async function getGroup(grupo) {
 
     // aqui deve ser filtrado na mesma OU de criação
     var opts = {
-        filter: `(&(objectCategory=group)(|(cn=${grupo})(name=${grupo})))`,
+        filter: `(&(objectCategory=group)(|(cn=${grupo})(name=${grupo})(sAMAccountName=${grupo})))`,
         scope: 'sub',
         attributes: [
             'cn',

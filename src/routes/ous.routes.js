@@ -1,17 +1,14 @@
 const express = require('express');
 const ousRoutes = express.Router();
 
-const searchOUController = require("../app/controllers/SearchOUController");
-const createOUController = require("../app/controllers/CreateOUController");
+const createOUController = require("../app/ous/services/CreateOU/CreateOUController");
+const searchOUController = require("../app/ous/services/SearchOU/SearchOUController");
+const listOUsController = require("../app/ous/services/ListOUs/ListOUsController");
 
+ousRoutes.post("/create", createOUController.handle);
+ousRoutes.post("/search", searchOUController.handle);
+ousRoutes.get("/", listOUsController.handle);
 
-ousRoutes.post("/search", searchOUController.searchOU);
-ousRoutes.post("/create", createOUController.createOU);
-
-
-
-// add grupo
-//editar grupo?
 
 
 module.exports = ousRoutes

@@ -1,29 +1,30 @@
 const express = require('express');
 const usersRoutes = express.Router(); 
 
-const autenticateController = require("../app/controllers/AuthenticateUserController");
-const createController = require("../app/controllers/CreateUserController");
-const updateController = require("../app/controllers/UpdateUserController");
-
-//novas
+const createUserController = require("../app/users/services/CreateUser/CreateUserController");
 const searchUserController = require("../app/users/services/SearchUser/SearchUserController");
+const authenticateUserController = require("../app/users/services/AuthenticateUser/AuthenticateUserController");
+const isUserMemberOfController = require("../app/users/services/IsUserMemberOf/IsUserMemberOfController");
+const updateUserController = require("../app/users/services/UpdateUser/UpdateUserController");
+const updateUserPasswordController = require("../app/users/services/UpdateUserPassword/UpdateUserPasswordController");
+const enableUserController = require("../app/users/services/EnableUser/EnableUserController");
+const disableUserController = require("../app/users/services/DisableUser/DisableUserController");
 
 
-usersRoutes.post("/:user/authenticate", autenticateController.authenticateUser);
-usersRoutes.post("/create", createController.createUser);
-usersRoutes.put("/:user", updateController.updateUser);
-// usersRoutes.get("/:user", searchController.searchUser);
-usersRoutes.put("/:user/password", updateController.updateUserPassword);
-
-
-/// novas
+usersRoutes.post("/create", createUserController.handle);
 usersRoutes.get("/:user", searchUserController.handle);
+usersRoutes.post("/:user/authenticate", authenticateUserController.handle);
+usersRoutes.get("/:user/member-of/:group", isUserMemberOfController.handle);
+usersRoutes.put("/:user", updateUserController.handle);
+usersRoutes.put("/:user/password", updateUserPasswordController.handle);
+usersRoutes.put("/:user/enable", enableUserController.handle);
+usersRoutes.put("/:user/disable", disableUserController.handle);
+
 
 
 ////////////////////////////////////////////
 // TO DO
-// PUT /user/:user/enable
-// PUT /user/:user/disable
+// DELETE /:user
 
 
 module.exports = usersRoutes

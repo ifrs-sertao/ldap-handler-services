@@ -1,14 +1,15 @@
 const express = require('express');
 const groupsRoutes = express.Router();
 
-const createGroupController = require("../app/controllers/CreateGroupController");
-const searchGroupController = require("../app/controllers/SearchGroupController");
-const addUserInGroupController = require("../app/controllers/AddUserInGroupController");
+const listGroupsController = require("../app/groups/services/ListGroups/ListGroupsController");
+const createGroupController = require("../app/groups/services/CreateGroup/CreateGroupController");
+const searchGroupController = require("../app/groups/services/SearchGroup/SearchGroupController");
+const addUserToGroupController = require("../app/groups/services/AddUserToGroup/AddUserToGroupController");
 
-groupsRoutes.post("/create", createGroupController.createGroup);
-groupsRoutes.get("/:group/", searchGroupController.searchGroup);
-groupsRoutes.post("/:group/user/:user", addUserInGroupController.addUserInGroup);
-
+groupsRoutes.get("/", listGroupsController.handle);
+groupsRoutes.post("/create", createGroupController.handle);
+groupsRoutes.get("/:group", searchGroupController.handle);
+groupsRoutes.post("/:group/user/:user", addUserToGroupController.handle);
 
 
 

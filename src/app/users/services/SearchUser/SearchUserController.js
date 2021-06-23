@@ -1,8 +1,6 @@
-require('dotenv').config()
-
 const searchUserService = require('./SearchUserService')
 
-class searchUserController {
+class SearchUserController {
 
     constructor() {}
 
@@ -17,4 +15,4 @@ class searchUserController {
     }
 }
 
-module.exports = new searchUserController;
+module.exports = new SearchUserController;
