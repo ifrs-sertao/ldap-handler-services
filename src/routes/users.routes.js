@@ -1,21 +1,30 @@
 const express = require('express');
 const usersRoutes = express.Router(); 
 
-const autenticateController = require("../app/controllers/AuthenticateUserController");
-const createController = require("../app/controllers/CreateUserController");
-const updateController = require("../app/controllers/UpdateUserController");
-const searchController = require("../app/controllers/SearchUserController");
+const createUserController = require("../app/modules/users/services/CreateUser/CreateUserController");
+const searchUserController = require("../app/modules/users/services/SearchUser/SearchUserController");
+const authenticateUserController = require("../app/modules/users/services/AuthenticateUser/AuthenticateUserController");
+const isUserMemberOfController = require("../app/modules/users/services/IsUserMemberOf/IsUserMemberOfController");
+const updateUserController = require("../app/modules/users/services/UpdateUser/UpdateUserController");
+const updateUserPasswordController = require("../app/modules/users/services/UpdateUserPassword/UpdateUserPasswordController");
+const enableUserController = require("../app/modules/users/services/EnableUser/EnableUserController");
+const disableUserController = require("../app/modules/users/services/DisableUser/DisableUserController");
 
-usersRoutes.post("/:user/authenticate", autenticateController.authenticateUser);
-usersRoutes.post("/create", createController.createUser);
-usersRoutes.put("/:user", updateController.updateUser);
-usersRoutes.get("/:user", searchController.searchUser);
 
-usersRoutes.put("/:user/password", updateController.updateUserPassword);
+usersRoutes.post("/create", createUserController.handle);
+usersRoutes.get("/:user", searchUserController.handle);
+usersRoutes.post("/authenticate", authenticateUserController.handle);
+usersRoutes.put("/:user/member-of/:group", isUserMemberOfController.handle);
+usersRoutes.put("/:user", updateUserController.handle);
+usersRoutes.put("/:user/password", updateUserPasswordController.handle);
+usersRoutes.put("/:user/enable", enableUserController.handle);
+usersRoutes.put("/:user/disable", disableUserController.handle);
 
+
+
+////////////////////////////////////////////
 // TO DO
-// PUT /user/:user/enable
-// PUT /user/:user/disable
+// DELETE /:user
 
 
 module.exports = usersRoutes

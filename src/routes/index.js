@@ -1,19 +1,17 @@
 const express = require('express')
 const router = express.Router()
 
-const sessionsRoutes = require('./sessions.routes')
+const authenticateRoutes = require('./authenticate.routes')
 const usersRoutes = require('./users.routes')
 const groupsRoutes = require('./groups.routes')
 const ousRoutes = require('./ous.routes')
 
-const sessionMiddleware = require('../app/middlewares/session')
+const { ensureAuthenticate } = require('../app/middlewares/ensureAuthenticate')
 
-
-router.use('/auth', sessionsRoutes)
-router.use('/users', sessionMiddleware.auth, usersRoutes)
-router.use('/groups', sessionMiddleware.auth, groupsRoutes)
-router.use('/ous', sessionMiddleware.auth, ousRoutes)
-
+router.use('/auth', authenticateRoutes)
+router.use('/users', ensureAuthenticate, usersRoutes)
+router.use('/groups', ensureAuthenticate, groupsRoutes)
+router.use('/ous', ensureAuthenticate, ousRoutes)
 
 
 module.exports = router
