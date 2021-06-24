@@ -4,15 +4,15 @@ module.exports = {
 
     async bindLDAP(user, password, ldapClient) {
 
-        const result = new Promise((resolve, reject) => {
+        const result = await new Promise((resolve, reject) => {
 
             ldapClient.bind(user, password, function (err) {
                 if (err) {
-                    console.log('ERRO: Falha na autenticação LDAP');
+                    console.log({ message: `bind FAILED!`});
                     console.log(err)
                     reject(err)
                 } else {
-                    console.log("SUCESSO: Autenticação realizada com sucesso - Conexão LDAP realizada");
+                    console.log({ message: `bind OK!`});
                     resolve()
                 }
             })

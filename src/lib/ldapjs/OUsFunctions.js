@@ -1,7 +1,7 @@
 const connection = require('../../app/config/CreateClientConnection');
 require('dotenv').config()
 
-const {ldapClient, ldapjs } = connection.CreateClient();
+const {ldapClient, ldapjs } = connection;
 
 const adSuffix = process.env.ADSUFFIX;
 

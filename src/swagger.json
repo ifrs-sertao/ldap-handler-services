@@ -2,16 +2,20 @@
     "openapi": "3.0.0",
     "info": {
         "title": "LDAP HANDLER SERVICES API REST",
-        "description": "REST API microservice for Active Directory/LDAP implementations.",
+        "description": "REST API microservice for Active Directory/LDAP implementations.<br>Uma proposta de REST API agnóstica para implementações LDAP como Samba 4, Active Directoty e OpenLDAP.",
         "version": "1.0.0",
         "contact": {
             "email": "everton.pavan@sertao.ifrs.edu.br"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
         }
     },
     "tags": [
         {
-            "name": "Sessions",
-            "description": "Authetication"
+            "name": "Authentication",
+            "description": "Authentication"
         },
         {
             "name": "Users",
@@ -31,15 +35,6 @@
             "url": "http://localhost:1111/api/v1"
         }
     ],
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT"
-            }
-        }
-    },
     "security": [
         {
             "bearerAuth": []
@@ -50,11 +45,12 @@
             "post": {
                 "security": [],
                 "tags": [
-                    "Sessions"
+                    "Authentication"
                 ],
                 "summary": "Authenticate in the application",
                 "description": "Authenticate in the application",
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -68,8 +64,8 @@
                                     }
                                 },
                                 "example": {
-                                    "user": "9999999",
-                                    "password": "secret"
+                                    "user": "99999999999",
+                                    "password": "99999999999"
                                 }
                             }
                         }
@@ -77,21 +73,41 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Autenticação realizada com sucesso"
+                        "description": "Authentication succeeded!"
+                    },
+                    "401": {
+                        "description": "User or password incorrect!"
+                    },
+                    "400": {
+                        "description": "The user does not have permission to access this application!"
                     }
                 }
             }
         },
-        "/users/{cpf}": {
+        "/users/{user}": {
             "get": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "List a specific user",
                 "description": "List a specific user",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "O usuário ${foundUser.cn} foi encontrado"
+                       "description": "OK"
+                    },
+                    "404": {
+                        "description": "The user does not exists!"
                     }
                 }
             },
@@ -101,9 +117,47 @@
                 ],
                 "summary": "Update a specific user",
                 "description": "Update a specific user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "mail": {
+                                        "type": "string"
+                                    },
+                                    "postalCode": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "mail": "ronaldo.nazario@fenomeno.com",
+                                    "postalCode": "2002-2002"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "O aluno ${foundUpdatedUser.cn} foi alterado com sucesso"
+                        "description": "The user has been updated!"
+                    },
+                    "404": {
+                        "description": "The user does not exists!"
+                    },
+                    "500": {
+                        "description": "The user cannot be updated!"
                     }
                 }
             }
@@ -116,6 +170,7 @@
                 "summary": "Create a user",
                 "description": "Create a new user",
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -139,10 +194,10 @@
                                 },
                                 "example": {
                                     "fullname": "Ronaldo Fenômeno Nazário",
-                                    "matricula": "9999999",
-                                    "cpf": "12345678900",
+                                    "matricula": "909090",
+                                    "cpf": "99999999999",
                                     "mail": "ronaldo.nazario@fenomeno.com",
-                                    "ou": "DC=devdom,DC=com"
+                                    "ou": "dc=players,dc=football"
                                 }
                             }
                         }
@@ -150,38 +205,198 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "O usuário ${fullname} foi adicionado com sucesso"
+                        "description": "The user has been created!"
                     },
-                    "401": {
-                        "description": "Usuário não pode ser criado"
+                    "404": {
+                        "description": "The OU does not exists!, The user ${fullname} already exists!"
+                    },
+                    "500": {
+                        "description": "The user cannot be created!"
                     }
                 }
             }
         },
-        "/users/{cpf}/authenticate": {
+        "/users/authenticate": {
             "post": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Authenticate with a specific user",
                 "description": "Authenticate with a specific user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "user": "9999999",
+                                    "password": "password"
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "Autenticação realizada com sucesso"
+                        "description": "Authentication succeeded!"
+                    },
+                    "404": {
+                        "description": "User or password incorrect!"
                     }
                 }
             }
         },
-        "/users/{cpf}/password": {
+        "/users/{user}/password": {
             "put": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Change password of specific user",
                 "description": "Change password of specific user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "password": "new-secret-password"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Senha do usuário ${user} foi alterada com sucesso"
+                        "description": "The password has been updated!"
+                    },
+                    "404": {
+                        "description": "The user does not exists!"
+                    },
+                    "500": {
+                        "description": "The password cannot be updated!"
+                    }
+                }
+            }
+        },
+        "/users/{user}/enable": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Enable a specific user",
+                "description": "Enable a specific user",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "enable: true"
+                    },
+                    "404": {
+                        "description": "The user does not exists!"
+                    },
+                    "500": {
+                        "description": "The user cannot be enable!"
+                    }
+                }
+            }
+        },
+        "/users/{user}/disable": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Disable a specific user",
+                "description": "Disable a specific user",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "disable: true"
+                    },
+                    "404": {
+                        "description": "The user does not exists!"
+                    },
+                    "500": {
+                        "description": "The user cannot be disable!"
+                    }
+                }
+            }
+        },
+        "/users/{user}/member-of/{group}": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Checks if user is a member of a group",
+                "description": "Checks if user is a member of a group",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "group",
+                        "in": "path",
+                        "description": "group",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "isUserMemberOf: true"
+                    },
+                    "404": {
+                        "description": "The user ${user} is not a member of ${group} group"
                     }
                 }
             }
@@ -206,7 +421,62 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "O grupo ${foundGroup.dn} existe na base LDAP"
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "The group does not exists!"
+                    }
+                }
+            }
+        },
+        "/groups": {
+            "get": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "List all groups",
+                "description": "List all groups",
+                "responses": {
+                    "201": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "The groups cannot be listed"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Groups"
+                ],
+                "summary": "Create a new group",
+                "description": "Create a new group",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "name": "players"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "The group already exists!"
+                    },
+                    "500": {
+                        "description": "The group cannot be created!"
                     }
                 }
             }
@@ -240,10 +510,65 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "O usuário ${foundUser.cn} foi adicionado ao grupo ${foundGroup.cn} com sucesso"
+                        "description": "The user has been add to group!"
                     },
-                    "401": {
-                        "description": "Usuário já está no grupo ALUNOS"
+                    "404": {
+                        "description": "The group does not exists!"
+                    },
+                    "500": {
+                        "description": "The user cannot be add to a group!`"
+                    }
+                }
+            }
+        },
+        "/ous": {
+            "get": {
+                "tags": [
+                    "OUs"
+                ],
+                "summary": "List all organizatinal units",
+                "description": "List all organizatinal units",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "The OUs cannot be listed`"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "OUs"
+                ],
+                "summary": "Create a new organizatinal units",
+                "description": "Create a new organizatinal units",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "ou": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "ou": "OU=test,DC=devdom,DC=com"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The organizational unit has been created!`"
+                    },
+                    "404":{
+                        "description": "The organizationl unit already exists!`"
+                    },
+                    "500": {
+                        "description": "The organizationl unit cannot be created!"
                     }
                 }
             }
@@ -274,13 +599,24 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "A OU ${foundOU.cn} existe na base LDAP"
+                        "description": "OK"
                     },
-                    "401": {
-                        "description": "A OU ${ou} não foi encontrada na base LDAP"
+                    "404": {
+                        "description": "The OU does not exists"
                     }
                 }
             }
         }
+    },
+
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
     }
 }
+

@@ -1,26 +1,38 @@
 const connection = require('../../app/config/CreateClientConnection');
 require('dotenv').config()
 
-const {ldapClient, ldapjs } = connection.CreateClient();
+const {ldapClient, ldapjs } = connection;
 
 const adSuffix = process.env.ADSUFFIX;
 const ouGroups = process.env.OU_GROUPS;
 
+const url =  process.env.URL
+const ldapConfig = {
+    url: url,
+}
+const ldapOptions = {
+    url: ldapConfig.url,
+};
 
 module.exports = {
 
     async authenticateUserFunction(user, password) {
 
+        const ldapClientAuth = ldapjs.createClient(ldapOptions);
+
         const result = await new Promise((resolve, reject) => {
 
-            ldapClient.bind(user, password, function (err) {
+            ldapClientAuth.bind(user, password, function (err) {
                 if (err) {
+                    ldapClientAuth.unbind();
                     reject(err)
                 } else {
+                    ldapClientAuth.unbind();
                     resolve()
                 }
+
             })
-        }).then(data => { return true }).catch(() => { return false })
+        }).then(data => { return true }).catch(() => { return false });
 
         return result
     },
@@ -159,6 +171,7 @@ module.exports = {
 
                 ldapClient.modify(newDN, change, function (err) {
                     if (err) {
+                        console.log(err)
                         reject(err)
                     } else {
                         resolve()
