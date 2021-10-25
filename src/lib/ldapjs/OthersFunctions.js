@@ -20,8 +20,6 @@ module.exports = {
 
         const result = await new Promise((resolve, reject) => {
 
-        console.log('entrou na promise')
-
             ldapClient.search(ypserver, opts, function (err, res) {
                 if (err) {
                     reject(err);

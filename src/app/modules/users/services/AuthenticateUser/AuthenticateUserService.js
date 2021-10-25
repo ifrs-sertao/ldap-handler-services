@@ -8,8 +8,8 @@ class AuthenticateUserService {
 
     constructor() {}
 
-    async execute(user, password) {
-
+    async execute({ user, password }) {
+        
         const foundUser = await usersRepository.searchByUser(user)
         if (!foundUser) {
             throw new AppError(404, `User or password incorrect!`);
