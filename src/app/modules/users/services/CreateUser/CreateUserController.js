@@ -10,7 +10,7 @@ class CreateUserController {
 
         const { fullname, matricula, cpf, mail, ou } = request.body;
 
-        const newUser = await createUserService.execute(fullname, matricula, cpf, mail, ou);
+        const newUser = await createUserService.execute({ fullname, matricula, cpf, mail, ou });
 
         return response.status(201).send({
             message: `The user ${newUser.cn} has been created!`,

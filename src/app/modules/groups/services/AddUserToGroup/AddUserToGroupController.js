@@ -10,7 +10,7 @@ class AddUserToGroupController {
 
         const addUser = await addUserToGroupService.execute(group, user);
 
-        return response.status(201).send({
+        return response.status(200).send({
             message: `The user ${group} has been add to ${group} group!`,
             userAddToGroup: addUser
         });

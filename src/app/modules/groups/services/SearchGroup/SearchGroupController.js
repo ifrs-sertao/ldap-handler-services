@@ -10,7 +10,9 @@ class SearchGroupController {
 
         const { group } = request.params;
 
+
         const foundGroup = await searchGroupService.execute(group);
+
 
         return response.status(200).send(foundGroup);
 

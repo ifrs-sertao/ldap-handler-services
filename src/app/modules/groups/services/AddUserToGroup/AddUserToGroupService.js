@@ -29,7 +29,7 @@ class CreateGroupService {
             throw new AppError(404, `The group ${group} does not exists!`);
         };
 
-        const addUserToGroup = await groupsRepository.addUserToGroup(foundGroup.dn, foundUser.dn)
+        const addUserToGroup = await groupsRepository.addUserToGroup(foundGroup[0].dn, foundUser.dn)
 
         if (!addUserToGroup) {
             throw new AppError(500, `The user ${user} cannot be add to a ${group} group!`);

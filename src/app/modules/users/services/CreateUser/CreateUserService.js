@@ -11,7 +11,7 @@ class CreateGroupService {
 
     constructor() { }
 
-    async execute(fullname, matricula, cpf, mail, ou) {
+    async execute({ fullname, matricula, cpf, mail, ou }) {
 
         const dataToCreate = formatAttributesNewUserData(fullname, matricula, cpf, mail, ou)
 
@@ -61,7 +61,9 @@ class CreateGroupService {
             throw new AppError(401, `The msSFU30MaxUidNumber cannot be updated!`);
          };
 
-        return { ...newUser_data, ...newUser_unixAttributes}
+
+        delete dataToUpdate.password
+        return { ...newUser_data, ...dataToUpdate }
     }
 }
 
