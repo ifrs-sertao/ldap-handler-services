@@ -1,0 +1,29 @@
+version: "3.2"
+
+services:
+  ldap-handler-services:
+    # build: .
+    image: ifrs/ldap-api-backend
+    ports:
+      - "1111:1111"
+    volumes: 
+      - .:/usr/app
+    networks:
+      - traefik-net
+      - ldap-api-backend-net
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        - "traefik.docker.network=traefik-net"
+        - "traefik.frontend.rule=Host:ldap-api-backend.sertao.ifrs.edu.br"
+        - "traefik.port=1111"
+        - "traefik.backend=ldap-handler-services"
+
+networks:
+  traefik-net:
+     external: true
+  ldap-api-backend-net:
+    driver: overlay

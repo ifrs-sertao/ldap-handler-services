@@ -1,5 +1,4 @@
 node_modules
 .env
 yarn.lock
-docker-compose.yml
 __tests__
