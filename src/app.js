@@ -24,6 +24,11 @@ app.get('/', (req, res) => {
     });
   });
 
+
+app.get('/swagger.json', (req, res) => {
+    res.send(swaggerFile)
+  });
+
 app.use('/api/v1', routes);
 
 // error handler middleware - put this in other files

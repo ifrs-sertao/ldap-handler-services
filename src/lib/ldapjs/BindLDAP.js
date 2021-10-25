@@ -6,6 +6,8 @@ module.exports = {
 
         const result = await new Promise((resolve, reject) => {
 
+           
+
             ldapClient.bind(user, password, function (err) {
                 if (err) {
                     console.log({ message: `bind FAILED!`});

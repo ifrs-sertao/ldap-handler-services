@@ -8,7 +8,7 @@ class AuthenticateUserController {
 
         const { user, password } = request.body
 
-        const auth = await authenticateUserService.execute(user, password)
+        const auth = await authenticateUserService.execute({ user, password })
 
         return response.status(200).send({
             message: `Authentication succeeded!`

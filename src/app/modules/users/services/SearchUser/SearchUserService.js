@@ -5,7 +5,7 @@ class SearchUserService {
 
     constructor() {}
 
-    async execute(user) {
+    async execute({ user }) {
 
         const foundUser = await usersRepository.searchByUser(user)
         

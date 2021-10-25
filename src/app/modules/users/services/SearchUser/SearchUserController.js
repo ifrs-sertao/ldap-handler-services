@@ -6,9 +6,9 @@ class SearchUserController {
 
     async handle(request, response) {
 
-        let { user } = request.params;
+        const { user } = request.params;
 
-        const foundUser = await searchUserService.execute(user)
+        const foundUser = await searchUserService.execute({ user })
 
         return response.status(200).send(foundUser);
 

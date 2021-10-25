@@ -10,7 +10,7 @@ class IsUserMemberOfService {
         const isUserMemberOf  = await usersRepository.isUserMemberOf(user, group)
 
         if (!isUserMemberOf) {
-            throw new AppError(204, `The user ${user} is not a member of ${group} group`);
+            throw new AppError(404, `The user ${user} is not a member of ${group} group`);
         };
       
         return isUserMemberOf
