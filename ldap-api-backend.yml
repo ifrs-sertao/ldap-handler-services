@@ -1,0 +1,27 @@
+version: '3.3'
+
+services:
+  portainer:
+    image: ifrs/ldap-api-backend
+    restart: always
+    ports:
+      - 1111:1111
+    #volumes:
+    #  - ./data:/data
+    # ATENÇÂO - NÂO ESQUEÇA ALTERAR O NOME DO SERVIÇO NAS ROTAS SENÃO QUEBRA AS OUTRAS APLICAÇÕES 
+    # (ex: troque traefik.http.routers.PORTAINER..... por um nome representativo e único da sua aplicação  ) 
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ldap-api-backend.rule=Host(`ldap-api-backend.sertao.ifrs.edu.br`)"
+      - "traefik.http.services.ldap-api-backend.loadbalancer.server.port=1111"
+      - "traefik.http.routers.ldap-api-backend.entrypoints=websecure"
+      - "traefik.http.routers.ldap-api-backend.tls"
+    networks:
+      - traefik-net
+
+#volumes:
+#    data:
+
+networks:
+  traefik-net:
+     external: true
